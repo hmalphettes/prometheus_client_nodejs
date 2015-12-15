@@ -1,8 +1,6 @@
-var Client, debug, express;
+var Client, debug;
 
 debug = require("debug")("prometheus-client");
-
-express = require("express");
 
 module.exports = Client = (function() {
   Client._globalRegistry = null;
@@ -31,19 +29,6 @@ module.exports = Client = (function() {
 
   Client.prototype.newGauge = function(args) {
     return this.register(new Client.Gauge(args));
-  };
-
-  Client.prototype.listen = function(port) {
-    var app;
-    app = express();
-    app.get("/metrics", this.registry.metricsFunc);
-    app.listen(port, function() {
-      return debug("Listening on " + port);
-    });
-    app.on("error", function(err) {
-      return debug("Metric server error: " + err);
-    });
-    return app;
   };
 
   return Client;

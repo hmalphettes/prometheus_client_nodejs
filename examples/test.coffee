@@ -26,5 +26,8 @@ setInterval ->
     gauge.set period:"1sec", Math.random()*1000
 , 1000
 
-# tell our client to set up a server on the given port
-client.listen(9010)
+#set up a server on the given port and setup our client endpoint
+app = require('express')();
+app.get("/metrics", client.metricsFunc())
+app.listen(9010)
+console.log "Metrics available on http://localhost:9010/metrics"

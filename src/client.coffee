@@ -1,5 +1,4 @@
 debug = require("debug")("prometheus-client")
-express = require "express"
 
 module.exports = class Client
     @_globalRegistry:   null
@@ -30,19 +29,5 @@ module.exports = class Client
 
     newGauge: (args) ->
         @register new Client.Gauge args
-
-    #----------
-
-    listen: (port) ->
-        app = express()
-        app.get "/metrics", @registry.metricsFunc
-        app.listen port, ->
-            debug "Listening on #{port}"
-        app.on "error", (err) ->
-            debug "Metric server error: #{err}"
-
-        app
-
-    #----------
 
     #----------

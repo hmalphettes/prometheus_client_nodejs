@@ -17,20 +17,15 @@ Then require the package and set up a new client instance:
 
     client = new Prometheus()
 
-The client library can create an HTTP app to serve up your metrics, or you
-can point to the output function from your own app router.
+The client library does not provide a builtin server.
 
-To use the built-in server:
-
-    client.listen(9090)
-
-Then use `curl http://127.0.0.1:9090` to see a text representation of your metrics.
-
-To use the metrics output function in your own express app, you might do:
+To use the metrics output function in an express app, you might do:
 
     app = express()
     app.get("/metrics",client.metricsFunc())
     app.listen(9090)
+
+Then use `curl http://127.0.0.1:9090` to see a text representation of your metrics.
 
 By default, the Prometheus client will use a global namespace. That means that
 any metrics registered inside your app (even by libraries) will show up in your
