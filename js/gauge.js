@@ -31,7 +31,7 @@ module.exports = Counter = (function(_super) {
       value = null;
     }
     label_hash = this.label_hash_for(labels);
-    return this._values[label_hash] = value;
+    return this._values.set(label_hash, value);
   };
 
   return Counter;

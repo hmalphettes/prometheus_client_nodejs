@@ -11,10 +11,10 @@ module.exports = class BaseMetric
         @base_labels    = opts?.labels
 
         # Init an empty values object, which will be keyed with labels.
-        @_values        = {}
+        @_values        = new Map()
 
         # Also init an empty object for caching hashed labels.
-        @_labelCache    = {}
+        @_labelCache    = new Map()
         @_labelKeys     = null
 
         throw "Name is required" if !@name
@@ -36,15 +36,17 @@ module.exports = class BaseMetric
 
     get: (labels={}) ->
         lh = @label_hash_for(labels)
-        @_values[lh] || @default()
+        @_values.has(lh) || @default()
 
     #----------
 
     values: ->
         values = []
+        lc = @_labelCache
 
-        for lh,v of @_values
-            values.push [@_labelCache[lh], v]
+        # once coffeescript support the spread operator:
+        #uneval([...@_values]).map((kv)->kv[0]=lc.get(lh);kv)
+        @_values.forEach (v,lh)->values.push([lc.get(lh), v])
 
         values
 
@@ -53,7 +55,7 @@ module.exports = class BaseMetric
     label_hash_for: (labels) ->
         lh = hash.sha1(labels)
 
-        return lh if @_labelCache[lh]
+        return lh if @_labelCache.has(lh)
 
         # Validate each label key
         for k,v of labels
@@ -66,6 +68,6 @@ module.exports = class BaseMetric
 
         # If yes to both, stash
         @_labelKeys = hash.keys(labels) if !@_labelKeys
-        @_labelCache[lh] = labels
+        @_labelCache.set(lh, labels)
 
         lh

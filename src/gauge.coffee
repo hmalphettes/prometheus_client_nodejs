@@ -20,5 +20,4 @@ module.exports = class Counter extends require("./base_metric")
 
     set: (labels={},value=null) ->
         label_hash = @label_hash_for(labels)
-        @_values[label_hash] = value
-
+        @_values.set(label_hash, value)

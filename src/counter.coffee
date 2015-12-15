@@ -21,12 +21,10 @@ module.exports = class Counter extends require("./base_metric")
     increment: (labels={},inc_by=1) ->
         label_hash = @label_hash_for(labels)
 
-        @_values[label_hash] ||= @default()
-        @_values[label_hash] += inc_by
+        val = @_values.get(label_hash) || @default()
+        @_values.set(label_hash, val + inc_by)
 
     #----------
 
     decrement: (labels={},dec_by=1) ->
         @increment labels, -dec_by
-
-

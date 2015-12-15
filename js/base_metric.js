@@ -11,8 +11,8 @@ module.exports = BaseMetric = (function() {
     this.subsystem = opts != null ? opts.subsystem : void 0;
     this.help = opts != null ? opts.help : void 0;
     this.base_labels = opts != null ? opts.labels : void 0;
-    this._values = {};
-    this._labelCache = {};
+    this._values = new Map();
+    this._labelCache = new Map();
     this._labelKeys = null;
     if (!this.name) {
       throw "Name is required";
@@ -39,24 +39,23 @@ module.exports = BaseMetric = (function() {
       labels = {};
     }
     lh = this.label_hash_for(labels);
-    return this._values[lh] || this["default"]();
+    return this._values.has(lh) || this["default"]();
   };
 
   BaseMetric.prototype.values = function() {
-    var lh, v, values, _ref;
+    var lc, values;
     values = [];
-    _ref = this._values;
-    for (lh in _ref) {
-      v = _ref[lh];
-      values.push([this._labelCache[lh], v]);
-    }
+    lc = this._labelCache;
+    this._values.forEach(function(v, lh) {
+      return values.push([lc.get(lh), v]);
+    });
     return values;
   };
 
   BaseMetric.prototype.label_hash_for = function(labels) {
     var k, lh, v;
     lh = hash.sha1(labels);
-    if (this._labelCache[lh]) {
+    if (this._labelCache.has(lh)) {
       return lh;
     }
     for (k in labels) {
@@ -74,7 +73,7 @@ module.exports = BaseMetric = (function() {
     if (!this._labelKeys) {
       this._labelKeys = hash.keys(labels);
     }
-    this._labelCache[lh] = labels;
+    this._labelCache.set(lh, labels);
     return lh;
   };
 

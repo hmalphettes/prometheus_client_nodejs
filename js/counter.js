@@ -23,7 +23,7 @@ module.exports = Counter = (function(_super) {
   };
 
   Counter.prototype.increment = function(labels, inc_by) {
-    var label_hash, _base;
+    var label_hash, val;
     if (labels == null) {
       labels = {};
     }
@@ -31,8 +31,8 @@ module.exports = Counter = (function(_super) {
       inc_by = 1;
     }
     label_hash = this.label_hash_for(labels);
-    (_base = this._values)[label_hash] || (_base[label_hash] = this["default"]());
-    return this._values[label_hash] += inc_by;
+    val = this._values.get(label_hash) || this["default"]();
+    return this._values.set(label_hash, val + inc_by);
   };
 
   Counter.prototype.decrement = function(labels, dec_by) {

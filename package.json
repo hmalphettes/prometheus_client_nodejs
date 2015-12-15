@@ -9,7 +9,7 @@
     "main":         "./index.js",
     "license":      "apache2",
     "engines": {
-        "node": ">=0.10.0"
+        "node": ">=0.12"
     },
     "dependencies": {
         "debug":          "~2.1.2",
@@ -20,7 +20,7 @@
       "prepublish": "grunt"
     },
     "devDependencies": {
-        "coffee-script":        "~1.7.1",
+        "coffee-script":        "~1.10.0",
         "mocha":                "~2.1.0",
         "chai":                 "~2.1.0",
         "grunt":                "^0.4.5",
