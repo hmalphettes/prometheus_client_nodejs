@@ -12,8 +12,8 @@
         "node": ">=0.10.0"
     },
     "dependencies": {
-        "debug":          "~2.1.2",
-        "object-hash":    "~0.5.0"
+        "debug":   "~2.1.2",
+        "sigmund": "~1.0.1"
     },
     "scripts": {
       "test": "grunt && ./node_modules/.bin/mocha test/",

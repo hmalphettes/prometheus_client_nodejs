@@ -1,5 +1,5 @@
 debug   = require("debug")("prometheus-client:metric")
-hash    = require "object-hash"
+sigmund = require "sigmund"
 
 module.exports = class BaseMetric
     # Valid opts are namespace, subsystem, name, help and labels.
@@ -51,7 +51,7 @@ module.exports = class BaseMetric
     #----------
 
     label_hash_for: (labels) ->
-        lh = hash.sha1(labels)
+        lh = sigmund(labels)
 
         return lh if @_labelCache[lh]
 
@@ -60,12 +60,13 @@ module.exports = class BaseMetric
             throw "Label #{k} must not start with __" if /^__/.test(k)
             throw "Label #{k} is reserved" if 'instance'==k || 'job'==k
 
+        labKeys = sigmund(Object.keys(labels))
         # Validate that the set of keys is correct
-        if @_labelKeys && hash.keys(labels) != @_labelKeys
+        if @_labelKeys && labKeys != @_labelKeys
             throw "Labels must have the same signature"
 
         # If yes to both, stash
-        @_labelKeys = hash.keys(labels) if !@_labelKeys
+        @_labelKeys = labKeys if !@_labelKeys
         @_labelCache[lh] = labels
 
         lh

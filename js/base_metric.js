@@ -1,8 +1,8 @@
-var BaseMetric, debug, hash;
+var BaseMetric, debug, sigmund;
 
 debug = require("debug")("prometheus-client:metric");
 
-hash = require("object-hash");
+sigmund = require("sigmund");
 
 module.exports = BaseMetric = (function() {
   function BaseMetric(opts) {
@@ -54,8 +54,8 @@ module.exports = BaseMetric = (function() {
   };
 
   BaseMetric.prototype.label_hash_for = function(labels) {
-    var k, lh, v;
-    lh = hash.sha1(labels);
+    var k, labKeys, lh, v;
+    lh = sigmund(labels);
     if (this._labelCache[lh]) {
       return lh;
     }
@@ -68,11 +68,12 @@ module.exports = BaseMetric = (function() {
         throw "Label " + k + " is reserved";
       }
     }
-    if (this._labelKeys && hash.keys(labels) !== this._labelKeys) {
+    labKeys = sigmund(Object.keys(labels));
+    if (this._labelKeys && labKeys !== this._labelKeys) {
       throw "Labels must have the same signature";
     }
     if (!this._labelKeys) {
-      this._labelKeys = hash.keys(labels);
+      this._labelKeys = labKeys;
     }
     this._labelCache[lh] = labels;
     return lh;
